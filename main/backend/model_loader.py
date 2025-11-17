@@ -15,8 +15,8 @@ from functools import lru_cache
 # ============================================
 # Replace these with your actual Google Drive file IDs
 
-MODEL_FILE_ID = 'YOUR_MODEL_PKL_FILE_ID_HERE'
-SCALER_FILE_ID = 'YOUR_SCALER_PKL_FILE_ID_HERE'
+MODEL_FILE_ID = 'https://drive.google.com/file/d/1-s4ADeacQ32pT1dmPl4KRtk7bq07E260/view?usp=sharing'
+SCALER_FILE_ID = 'https://drive.google.com/file/d/10a3aCU8iNhVslm2uawpIfM6UTUv6NYiO/view?usp=sharing'
 
 # Download destination (temp folder)
 CACHE_DIR = '/tmp/ml_models'
