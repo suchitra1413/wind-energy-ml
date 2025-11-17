@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wind Power Prediction - ML Model</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>Wind Power Prediction</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#predict">Predict</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h2>Predict Wind Power Output</h2>
+            <p>Advanced ML Model for Hourly Wind Energy Forecasting</p>
+            <button class="cta-btn" onclick="document.getElementById('predict').scrollIntoView({behavior: 'smooth'})">
+                Get Started
+            </button>
+        </div>
+        <div class="hero-visual">
+            <div class="wind-animation">
+                <div class="turbine">💨</div>
+                <div class="turbine">💨</div>
+                <div class="turbine">💨</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prediction Section -->
+    <section id="predict" class="predict-section">
+        <div class="container">
+            <h2>Input Meteorological Data</h2>
+            <p class="section-subtitle">Enter the weather parameters to predict hourly wind power output</p>
+
+            <div class="prediction-wrapper">
+                <!-- Input Form -->
+                <div class="input-panel">
+                    <form id="predictionForm">
+                        <div class="form-group">
+                            <label>Location ID</label>
+                            <input type="number" id="location" placeholder="e.g., 1" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Temperature (°C)</label>
+                                <input type="number" id="temp_2m" placeholder="e.g., 25.5" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Relative Humidity (%)</label>
+                                <input type="number" id="relhum_2m" placeholder="e.g., 65" min="0" max="100" step="0.1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Dew Point (°C)</label>
+                                <input type="number" id="dp_2m" placeholder="e.g., 18.2" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Wind Speed at 10m (m/s)</label>
+                                <input type="number" id="ws_10m" placeholder="e.g., 5.2" step="0.1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Wind Speed at 100m (m/s)</label>
+                                <input type="number" id="ws_100m" placeholder="e.g., 8.5" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Wind Direction at 10m (°)</label>
+                                <input type="number" id="wd_10m" placeholder="e.g., 180" min="0" max="360" step="0.1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Wind Direction at 100m (°)</label>
+                                <input type="number" id="wd_100m" placeholder="e.g., 195" min="0" max="360" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Wind Gust at 10m (m/s)</label>
+                                <input type="number" id="wg_10m" placeholder="e.g., 3.2" step="0.1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Hour of Day</label>
+                                <input type="number" id="hour" placeholder="e.g., 14" min="0" max="23" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Day of Month</label>
+                                <input type="number" id="day" placeholder="e.g., 15" min="1" max="31" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Month</label>
+                                <input type="number" id="month" placeholder="e.g., 6" min="1" max="12" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Day of Week (0=Monday)</label>
+                                <input type="number" id="dayofweek" placeholder="e.g., 2" min="0" max="6" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Is Weekend? (0=No, 1=Yes)</label>
+                            <select id="is_weekend" required>
+                                <option value="">Select...</option>
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="submit-btn">Predict Power Output</button>
+                    </form>
+                </div>
+
+                <!-- Results Panel -->
+                <div class="results-panel">
+                    <div id="loadingSpinner" class="loading hidden">
+                        <div class="spinner"></div>
+                        <p>Predicting...</p>
+                    </div>
+
+                    <div id="resultContainer" class="result-container hidden">
+                        <h3>Prediction Result</h3>
+                        
+                        <div class="result-box">
+                            <div class="result-label">Predicted Power Output</div>
+                            <div class="result-value" id="predictedPower">-</div>
+                            <div class="result-unit">Normalized (0-1)</div>
+                        </div>
+
+                        <div class="result-details">
+                            <h4>Power Status</h4>
+                            <div id="powerStatus" class="status">-</div>
+                        </div>
+
+                        <div class="result-chart">
+                            <h4>Power Scale Visualization</h4>
+                            <div class="power-bar">
+                                <div class="power-fill" id="powerFill"></div>
+                            </div>
+                            <div class="power-scale">
+                                <span>0% (No Output)</span>
+                                <span id="percentText">-</span>
+                                <span>100% (Max Output)</span>
+                            </div>
+                        </div>
+
+                        <button class="reset-btn" onclick="resetForm()">Make Another Prediction</button>
+                    </div>
+
+                    <div id="errorContainer" class="error-container hidden">
+                        <h3>Error</h3>
+                        <p id="errorMessage"></p>
+                        <button class="reset-btn" onclick="resetForm()">Try Again</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2>About the Model</h2>
+            <div class="about-grid">
+                <div class="about-card">
+                    <h3>🤖 Model Architecture</h3>
+                    <p>Random Forest Regressor with 300 estimators trained on 140,160 wind power samples</p>
+                </div>
+                <div class="about-card">
+                    <h3>📊 Performance</h3>
+                    <p>R² Score: 0.827 | MAE: 0.074 | RMSE: 0.105</p>
+                </div>
+                <div class="about-card">
+                    <h3>⚙️ Features</h3>
+                    <p>11 meteorological inputs with advanced feature engineering (polynomial, circular, interaction)</p>
+                </div>
+                <div class="about-card">
+                    <h3>⏰ Prediction Scope</h3>
+                    <p>Hourly wind power forecasting based on real-time weather conditions</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2>Get in Touch</h2>
+            <div class="contact-content">
+                <p>Interested in deploying this model for your wind farm?</p>
+                <p>Contact us for enterprise solutions and custom implementations.</p>
+                <div class="contact-links">
+                    <a href="https://github.com" class="contact-btn">GitHub Repository</a>
+                    <a href="mailto:contact@windpower.ai" class="contact-btn">Email Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Wind Power Prediction. ML Model for Renewable Energy. All rights reserved.</p>
+            <p>Powered by Python, Flask, and Machine Learning</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
